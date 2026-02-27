@@ -1,0 +1,40 @@
+<launch>
+
+  <!-- Arguments -->
+  <arg name="use_sim_time" default="false" />
+  <!-- <arg name="params_file" default="$(find yhs_can_control)/params/cfg.yaml" /> -->
+  <group ns="mobile_robot">
+    <!-- Robot Description (xacro -> urdf) -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find isrl_robot_description)/urdf/robot1.xacro   " />
+
+    <!-- Use sim time -->
+    <param name="use_sim_time" value="$(arg use_sim_time)" />
+
+    <!-- Robot State Publisher -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="base_robot_state_publisher" output="screen">
+      <!-- Remap robot_description topic -->
+      <remap from="/robot_description" to="/mobile_robot_description" />
+    </node>
+
+    <!-- Static transform: odom -> base_link -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="odom_to_mobilebase" args="0.0 0.0 0.0 0.0 0.0 0.0 odom mobile_base_link 100" /> -->
+
+    <!-- Static transform: mobile_base_link -> os_sensor -->
+    <node pkg="tf" type="static_transform_publisher" name="mobilebase_to_os_sensor" args="0.32 0.0 0.505 0.0 0.0 0.0 mobile_base_link os_sensor 100" />
+    <!-- <node pkg="tf" type="static_transform_publisher" name="mobilebase_to_os_sensor" args="0.32 0.0 0.887 0.0 0.0 0.0 mobile_base_link os_sensor 100" /> -->
+
+    <!-- Static transform: mobile_base_link -> IMU sensor -->
+    <node pkg="tf" type="static_transform_publisher" name="mobilebase_to_imu" args="0.0 0.0 0.0 0.0 0.0 0.0 mobile_base_link imu 100" />
+
+    <!-- Static transform: mobile_base_link -> camera_link -->
+    <node pkg="tf" type="static_transform_publisher" name="mobilebase_to_realsense" args="0.41 0.01 0.335 0.0 0.7854 0.0 mobile_base_link camera_link 100" />
+    
+    <!-- yhs_can_control_node 실행 -->
+    <node pkg="yhs_can_control" type="yhs_can_control_node" name="yhs_can_control_node" output="screen">
+    </node>
+    <node pkg="yhs_can_control" type="ctrl_fb_to_odom" name="ctrl_fb_to_odom_node" output="screen">
+    </node>
+  </group>
+
+  <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find isrl_robot_description)/rviz/for_grad.rviz"/> -->
+</launch>

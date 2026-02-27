@@ -1,0 +1,27 @@
+global_costmap:
+  # 좌표계 설정
+  global_frame: map
+  robot_base_frame: mobile_base_link
+
+  # 업데이트 / 퍼블리시 주기
+  update_frequency: 5.0
+  publish_frequency: 2.0
+  transform_tolerance: 0.5
+
+  # 전역 맵은 정적인 map_server 기반
+  static_map: true
+  rolling_window: false
+
+  # 사용 레이어
+  plugins:
+    - {name: static_layer,    type: "costmap_2d::StaticLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+  static_layer:
+    enabled: true
+    # map_topic: /map   # 기본값이면 생략 가능
+
+  inflation_layer:
+    enabled: true
+    inflation_radius: 0.5         # 지금 설정 유지해도 무방
+    cost_scaling_factor: 2.4

@@ -1,0 +1,36 @@
+<launch>
+
+  <!-- Arguments -->
+  <arg name="use_sim_time" default="false" />
+  <!-- <arg name="params_file" default="$(find yhs_can_control)/params/cfg.yaml" /> -->
+  <group ns="mobile_robot">
+    <!-- Robot Description (xacro -> urdf) -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find isrl_robot_description)/urdf/robot.xacro  " />
+
+    <!-- Use sim time -->
+    <param name="use_sim_time" value="$(arg use_sim_time)" />
+
+    <!-- Robot State Publisher -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="base_robot_state_publisher" output="screen">
+      <!-- Remap robot_description topic -->
+      <!-- <remap from="/robot_description" to="/mobile_robot_description" /> -->
+    </node>
+
+    <!-- Static transform: mobile_base_link -> base_link -->
+    <node pkg="tf" type="static_transform_publisher" name="mobile_base_to_m0609" args="0.15 0.0 0.50 -1.57 0.0 0.0 mobile_base_link base_0 100" />
+
+    <!-- Static transform: mobile_base_link -> os_sensor -->
+    <node pkg="tf" type="static_transform_publisher" name="mobilebase_to_os_sensor" args="0.32 0.0 0.36 0.0 0.0 0.0 mobile_base_link os_sensor 100" />
+
+    <!-- Static transform: link_6 -> camera_link -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="link6_to_l515" args="-0.07 0.0 -0.04 0.0 -1.5 0.0 link6 camera_link 100" /> -->
+    <node pkg="tf" type="static_transform_publisher" name="link6_to_d455f" args="-0.07 0.0 -0.04 3.14 -1.57 0.0 link6 camera_link 100" />
+
+    <!-- Static transform: mobile_base_link -> zed_link -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="mobilebase_to_zed" args="0.41 0.0 0.46 0.0 0.0 0.0 mobile_base_link zed_link 100" /> -->
+
+    <!-- yhs_can_control_node 실행 -->
+    <node pkg="yhs_can_control" type="yhs_can_control_node" name="yhs_can_control_node" output="screen">
+    </node>
+  </group>
+</launch>

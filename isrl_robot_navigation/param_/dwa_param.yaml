@@ -1,0 +1,38 @@
+DWAPlannerROS:
+  # 병진 속도
+  max_vel_x: 0.5
+  min_vel_x: -0.25
+
+  max_vel_trans: 0.5
+  min_vel_trans: 0.10
+
+  # 회전 관련 – ★ 핵심
+  max_vel_theta: 1.0        # 또는 max_vel_theta: 0.5  (실제 로봇 최대 회전속도에 맞추기)
+  # min_vel_theta: -1.0       # 너무 느리면 안 도는 경우: 로봇이 실제로 돌아가는 최소 속도
+
+  acc_lim_x: 0.5
+  acc_lim_theta: 0.5      # 회전 가속도도 절반 정도로 줄여서 '급회전' 기대를 낮춤
+
+  # 시뮬레이션 시간 – 느린 회전을 예측하기 위해 조금 늘리기
+  sim_time: 3.0           # 2.0 → 3.0
+
+  vx_samples: 10
+  vtheta_samples: 30
+
+  sim_granularity: 0.05
+
+  # 득점/기타
+  path_distance_bias: 5.0
+  goal_distance_bias: 2.0
+  occdist_scale: 3.0     # 30.5도 나쁘진 않은데, 너무 공격적이면 20~30 사이에서 조절
+
+  forward_point_distance: 0.325
+  stop_time_buffer: 0.4
+
+  # goal 근처 각도 너무 빡세지 않게 (딜레이 있는 4륜 조향에서는 특히)
+  yaw_goal_tolerance: 0.25   # ≈ 14°
+  xy_goal_tolerance: 0.15
+
+  prune_plan: true
+  escape_vel: -0.1
+

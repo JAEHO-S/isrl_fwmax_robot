@@ -1,0 +1,43 @@
+local_costmap:
+  global_frame: odom #odom  
+  robot_base_frame: mobile_base_link
+  update_frequency: 5.0
+  publish_frequency: 5.0
+  rolling_window: true
+  width: 6.0
+  height: 6.0
+  resolution: 0.05
+  transform_tolerance: 0.5
+  plugins:
+    # - {name: obstacle_layer,  type: "costmap_2d::ObstacleLayer"}
+    - {name: film_layer,      type: "film_costmap_layer/FilmLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+  # obstacle_layer:
+  #   enabled: true
+  #   combination_method: 1   # MAX
+  #   observation_sources: lidar
+  #   lidar:
+  #     sensor_frame: os_sensor
+  #     data_type: PointCloud2 #LaserScan
+  #     topic: /ouster/points             # ← 당신의 라이다 토픽으로 변경
+  #     marking: true
+  #     clearing: true
+  #     expected_update_rate: 0.1     # 10Hz 라이다면 0.1s
+  #     min_obstacle_height: 0.7
+  #     max_obstacle_height: 0.8
+  #     obstacle_range: 4.0
+  #     raytrace_range: 5.0
+  #     inf_is_valid: true
+
+  inflation_layer:
+    enabled: true
+    inflation_radius: 0.45      # (또는 1.0, global과 동일)
+    cost_scaling_factor: 1.4
+
+  film_layer:
+    enabled: true
+    film_topic: /film_cgan/costmap     # Python 노드에서 퍼블리시하는 토픽
+    lethal_threshold: 30               # 80~100은 LETHAL_OBSTACLE로
+    scale: 1.0                         # cost 스케일 (필요하면 0.5~1.0 사이로 조정)
+

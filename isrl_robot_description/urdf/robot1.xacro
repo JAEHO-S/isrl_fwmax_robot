@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="description" >
+
+  <link name="mobile_base_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry>
+        <mesh filename="package://isrl_robot_description/meshes/isrl_fwmax_pro.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision>
+				<origin rpy="0 0 0" xyz="0 0 0" />
+				<geometry>
+					<mesh filename="package://isrl_robot_description/meshes/isrl_fwmax_pro.dae" scale="1 1 1"/>
+				</geometry>
+		</collision>
+  </link>
+
+  <!-- <link name="base_footprint">
+  </link> -->
+
+  <!-- <joint name="base_to_footprint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="mobile_base_link"/>
+    <origin xyz="0.0 0.0 0.388" rpy="0.0 0.0 0.0"/>
+  </joint> -->
+
+  <!-- <link name="os_sensor">
+  </link>
+
+  <joint name="base_to_lidar" type="fixed">
+    <parent link="mobile_base_link"/>
+    <child link="os_sensor"/>
+    <origin xyz="0.32 0.0 0.36" rpy="0.0 0.0 0.0"/>
+  </joint> -->
+
+</robot>

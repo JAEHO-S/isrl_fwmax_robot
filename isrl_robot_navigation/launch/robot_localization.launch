@@ -1,8 +1,0 @@
-<launch>
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_odom" output="screen">
-    <param name="odom_frame" value="odom"/>
-    <param name="base_link_frame" value="mobile_base_link"/>
-    <param name="world_frame" value="odom"/>
-    <rosparam command="load" file="$(find isrl_robot_navigation)/param/ekf.yaml"/>
-  </node>
-</launch>

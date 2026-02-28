@@ -6,5 +6,6 @@
 **/*.bag.active
 **/__pycache__/
 **/*.pyc
+**/FW-max_pro/
 .vscode/
 .idea/

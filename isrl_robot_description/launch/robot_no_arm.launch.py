@@ -1,4 +1,5 @@
 import os
+from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, GroupAction
 from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
@@ -18,11 +19,13 @@ def generate_launch_description():
     isrl_robot_desc_share = FindPackageShare('isrl_robot_description')
     
     # Robot Description from xacro (robot1.xacro for no_arm variant)
+    # Use the `xacro` executable from the system PATH (typical location: /opt/ros/<distro>/bin/xacro)
+    # Avoid using FindPackageShare('xacro') + 'bin' since that path may not exist.
+    # Ensure a space separates the `xacro` executable and the file path so
+    # Command concatenation produces a valid command string.
     robot_description_content = Command(
         [
-            PathJoinSubstitution(
-                [FindPackageShare('xacro'), 'bin', 'xacro']
-            ),
+            'xacro',
             ' ',
             PathJoinSubstitution(
                 [isrl_robot_desc_share, 'urdf', 'robot1.xacro']
@@ -48,9 +51,9 @@ def generate_launch_description():
     static_tf_mobilebase_to_os_sensor = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='mobilebase_to_os_sensor',
+        name='base_link_to_os_sensor',
         arguments=['0.32', '0.0', '0.505', '0.0', '0.0', '0.0',
-                   'mobile_base_link', 'os_sensor'],
+                   'base_link', 'os_sensor'],
         output='screen',
     )
 
@@ -58,9 +61,9 @@ def generate_launch_description():
     static_tf_mobilebase_to_imu = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='mobilebase_to_imu',
+        name='base_link_to_imu',
         arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0',
-                   'mobile_base_link', 'imu'],
+                   'base_link', 'imu'],
         output='screen',
     )
 
@@ -68,29 +71,27 @@ def generate_launch_description():
     static_tf_mobilebase_to_realsense = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='mobilebase_to_realsense',
+        name='base_link_to_realsense',
         arguments=['0.41', '0.01', '0.335', '0.0', '0.7854', '0.0',
-                   'mobile_base_link', 'camera_link'],
+                   'base_link', 'camera_link'],
         output='screen',
     )
 
-    # yhs_can_control_node
-    yhs_can_control_node = Node(
-        package='yhs_can_control',
-        executable='yhs_can_control_node',
-        name='yhs_can_control_node',
-        output='screen',
-        namespace='mobile_robot',
-    )
+    # FWMax CAN Control Node
+    share_dir = get_package_share_directory('yhs_can_control')
+    parameter_file = LaunchConfiguration('params_file')
 
-    # ctrl_fb_to_odom node
-    # ctrl_fb_to_odom_node = Node(
-    #     package='yhs_can_control',
-    #     executable='ctrl_fb_to_odom',
-    #     name='ctrl_fb_to_odom_node',
-    #     output='screen',
-    #     namespace='mobile_robot',
-    # )
+    params_declare = DeclareLaunchArgument('params_file',
+                                           default_value=os.path.join(
+                                               share_dir, 'params', 'cfg.yaml'),
+                                           description='FPath to the ROS2 parameters file to use.')
+
+    yhs_can_control_node = Node(package='yhs_can_control',
+                                executable='yhs_can_control_node',
+                                name='yhs_can_control_node',
+                                output='screen',
+                                parameters=[parameter_file]
+                                )
 
     # Group all nodes under mobile_robot namespace
     mobile_robot_group = GroupAction(
@@ -99,8 +100,8 @@ def generate_launch_description():
             static_tf_mobilebase_to_os_sensor,
             static_tf_mobilebase_to_imu,
             static_tf_mobilebase_to_realsense,
+            params_declare,
             yhs_can_control_node,
-            # ctrl_fb_to_odom_node,
         ],
         scoped=True,
         launch_configurations={'use_sim_time': LaunchConfiguration('use_sim_time')},

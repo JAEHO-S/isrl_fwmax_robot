@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>isrl_robot_description</name>
   <version>0.0.0</version>
   <description>The isrl_robot_description package</description>
@@ -48,12 +48,16 @@
   <!--   <test_depend>gtest</test_depend> -->
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <!-- ROS2 Humble dependencies -->
+  <depend>xacro</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>tf2_ros</depend>
+  <exec_depend>yhs_can_control</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- Other tools can request additional information be placed here -->
-
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

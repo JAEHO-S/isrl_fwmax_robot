@@ -47,6 +47,16 @@ def generate_launch_description():
         ],
     )
 
+    # Static Transform Publisher: base_footprint -> base_link
+    static_tf_basefootprint_to_baselink = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='basefootprint_to_baselink',
+        arguments=['0.0', '0.0', '0.388', '0.0', '0.0', '0.0',
+                   'base_footprint', 'base_link'],
+        output='screen',
+    )
+
     # Static Transform Publisher: mobile_base_link -> os_sensor
     static_tf_mobilebase_to_os_sensor = Node(
         package='tf2_ros',
@@ -97,6 +107,7 @@ def generate_launch_description():
     mobile_robot_group = GroupAction(
         actions=[
             robot_state_publisher_node,
+            static_tf_basefootprint_to_baselink,
             static_tf_mobilebase_to_os_sensor,
             static_tf_mobilebase_to_imu,
             static_tf_mobilebase_to_realsense,

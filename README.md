@@ -16,7 +16,7 @@
 
 1. Build the workspace:
 ```bash
-cd /home/jhgod/fwmax_ws
+cd ~/fwmax_ws
 colcon build --packages-select isrl_robot_description isrl_fwmax_nav2 isrl_fwmax_slam
 ```
 
